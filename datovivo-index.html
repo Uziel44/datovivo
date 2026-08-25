@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datovivo — Directorio de observatorios turísticos de Argentina</title>
+<meta name="description" content="Datovivo reúne y clasifica los observatorios e informes estadísticos de turismo de cada provincia argentina, en un solo lugar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EFF1E7;
+    --card: #F8F9F3;
+    --ink: #15302A;
+    --ink-soft: #4C5F56;
+    --line: #D3DACB;
+    --gold: #A97A24;
+    --teal: #2A6B5D;
+    --brick: #A24B3B;
+    --radius: 4px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display{ font-family: 'Fraunces', Georgia, serif; }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+  a{ color: inherit; }
+  img{ max-width:100%; display:block; }
+
+  .wrap{ max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Hero ---------- */
+  .hero{ position: relative; overflow:hidden; }
+  .hero-photo{
+    position:absolute; inset:0;
+    background-image: linear-gradient(180deg, rgba(21,48,42,0.78) 0%, rgba(21,48,42,0.92) 100%), url('https://images.unsplash.com/photo-1694184023356-e1edfd130269?fm=jpg&q=70&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center 65%;
+  }
+  .hero-inner{
+    position:relative;
+    color: #F4F1E4;
+    padding: 64px 0 56px;
+  }
+  .kicker{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin: 0 0 22px;
+  }
+  .kicker .dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+  }
+  .kicker span{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #D8D2B8;
+  }
+  h1.brand{
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    color: #FBFAF2;
+  }
+  .hero-lede{
+    font-size: 1.1rem;
+    line-height: 1.65;
+    max-width: 58ch;
+    color: #E6E2CE;
+    margin: 0 0 40px;
+  }
+  .hero-features{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 0 0 36px;
+    padding: 0;
+    list-style:none;
+  }
+  .hero-features li{
+    font-size: 0.94rem;
+    color: #D8D2B8;
+    max-width: 30ch;
+    line-height: 1.5;
+  }
+  .hero-features b{ color: #FBFAF2; display:block; font-weight: 600; margin-bottom: 3px; }
+
+  .hero-ctas{ display:flex; flex-wrap: wrap; gap: 14px; }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration:none;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn-primary{ background: var(--gold); color: #1E1608; }
+  .btn-ghost{ background: transparent; color: #FBFAF2; border: 1px solid rgba(251,250,242,0.4); }
+
+  /* ---------- Section shell ---------- */
+  section{ padding: 60px 0; }
+  .section-head{ margin: 0 0 34px; max-width: 62ch; }
+  .section-head .mono{
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display:block;
+    margin-bottom: 10px;
+  }
+  .section-head h2{
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .section-head p{
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin:0;
+    font-size: 1rem;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend{
+    display:flex; flex-wrap: wrap; gap: 20px;
+    margin: 0 0 28px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  .legend span{ display:inline-flex; align-items:center; gap: 7px; }
+  .legend i{ width: 8px; height: 8px; border-radius: 50%; display:inline-block; }
+  .i-teal{ background: var(--teal); }
+  .i-gold{ background: var(--gold); }
+  .i-brick{ background: var(--brick); }
+
+  /* ---------- Catalog grid ---------- */
+  .catalog{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px;
+  }
+  .card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 18px 20px;
+    position: relative;
+  }
+  .card-top{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .card-code{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+  }
+  .card-status{ width: 8px; height: 8px; border-radius: 50%; margin-top: 3px; }
+  .card h3{
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+    line-height: 1.25;
+  }
+  .card ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap: 6px; }
+  .card a.res{
+    font-size: 0.88rem;
+    color: var(--teal);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(42,107,93,0.35);
+    line-height: 1.4;
+  }
+  .card a.res:hover{ border-bottom-color: var(--teal); }
+  .card .empty{
+    font-size: 0.88rem;
+    color: var(--brick);
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  /* ---------- Fuentes (bibliography) ---------- */
+  .biblio-group{ margin-bottom: 30px; }
+  .biblio-group h4{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .biblio-group ul{ list-style:none; margin:0; padding:0; }
+  .biblio-group li{
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--line);
+    display:flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .biblio-group li:last-child{ border-bottom: none; }
+  .biblio-group a{
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .biblio-group a:hover{ color: var(--teal); }
+  .biblio-note{
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    white-space: nowrap;
+  }
+
+  /* ---------- Closing / footer ---------- */
+  .closing{
+    background: var(--ink);
+    color: #EFEEDF;
+  }
+  .closing .wrap{ padding: 56px 28px; }
+  .closing-row{
+    display:flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  @media (min-width: 760px){
+    .closing-row{ flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+  .closing h2{
+    font-size: 1.6rem;
+    margin: 0 0 10px;
+    color: #FBFAF2;
+  }
+  .closing p{
+    margin:0;
+    color: #C7CBB8;
+    max-width: 46ch;
+    line-height: 1.55;
+    font-size: 0.95rem;
+  }
+  .closing-ctas{ display:flex; gap: 12px; flex-wrap: wrap; }
+
+  footer.colophon{
+    padding: 22px 0 34px;
+    text-align:center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    color: #8FA095;
+  }
+
+  :focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce){ * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-photo"></div>
+  <div class="wrap hero-inner">
+    <div class="kicker"><span class="dot"></span><span>Directorio de datos turísticos · Argentina</span></div>
+    <h1 class="brand">Datovivo</h1>
+    <p class="hero-lede">
+      Reunimos y clasificamos, provincia por provincia, los observatorios e informes estadísticos de turismo que ya existen en Argentina —
+      para que encontrar la cifra que necesitás no te tome media tarde de búsqueda.
+    </p>
+    <ul class="hero-features">
+      <li><b>Cifras a mano</b>Estadísticas y tableros actualizados de cada jurisdicción, ordenados en un solo lugar.</li>
+      <li><b>Fuente original</b>Cada ficha enlaza directo al reporte o repositorio oficial, sin intermediarios.</li>
+    </ul>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="https://forms.gle/NrSgU3DPCtPnLBPW7" target="_blank" rel="noopener">Sumar un dato que falta</a>
+      <a class="btn btn-ghost" href="https://cafecito.app/datovivo" target="_blank" rel="noopener">Invitar un cafecito</a>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section id="directorio">
+
+    <div class="legend">
+      <span><i class="i-teal"></i>Fuente activa</span>
+      <span><i class="i-gold"></i>Informe puntual o desactualizado</span>
+      <span><i class="i-brick"></i>Sin observatorio disponible</span>
+    </div>
+
+    <div class="catalog">
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-C</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Ciudad de Buenos Aires</h3>
+        <ul><li><a class="res" href="https://turismo.buenosaires.gob.ar/es/observatorio" target="_blank" rel="noopener">Observatorio Turístico CABA →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-X</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Córdoba</h3>
+        <ul><li><a class="res" href="https://turismo.cordoba.gob.ar/tableros-analisis-datos-ot/" target="_blank" rel="noopener">Tableros de análisis de datos →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-R</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Río Negro — Bariloche</h3>
+        <ul>
+          <li><a class="res" href="https://www.bariloche.gov.ar/intro-circuito-historico-ordenador/estadisticas-turisticas/" target="_blank" rel="noopener">Estadísticas turísticas →</a></li>
+          <li><a class="res" href="https://drive.google.com/file/d/18njgU2kmBM0GyNRgivr99O4Ig8uxVhb2/view" target="_blank" rel="noopener">Política de Turismo 2025 (PDF) →</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-M</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Mendoza</h3>
+        <ul><li><a class="res" href="https://informacionoficial.mendoza.gob.ar/turismo/observatorio-turistico/" target="_blank" rel="noopener">Observatorio Turístico →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-N</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Misiones — Iguazú</h3>
+        <ul><li><a class="res" href="https://pyenda.com/visitiguazu/grafico3.html" target="_blank" rel="noopener">Panel de visitantes →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-Y</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Jujuy</h3>
+        <ul><li><a class="res" href="https://dipec.jujuy.gob.ar/indicadores-economicos/turismo/observatorio-turistico/" target="_blank" rel="noopener">Indicadores de turismo →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-A</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Salta</h3>
+        <ul><li><a class="res" href="https://visitsalta.ar/estadisticas/" target="_blank" rel="noopener">Estadísticas de turismo →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-H</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Chaco</h3>
+        <ul><li><a class="res" href="https://turismo.chaco.gob.ar/observatorio-turistico-del-chaco/" target="_blank" rel="noopener">Observatorio Turístico del Chaco →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-T</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Tucumán</h3>
+        <ul><li><a class="res" href="https://www.institucionalturismotuc.gob.ar/articulos/articulo/73/informesdetemporadas" target="_blank" rel="noopener">Informes de temporadas →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-P</span><span class="card-status" style="background:var(--brick)"></span></div>
+        <h3>Formosa</h3>
+        <ul><li><span class="empty">Sin observatorio disponible</span></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-S</span><span class="card-status" style="background:var(--gold)"></span></div>
+        <h3>Santa Fe</h3>
+        <ul><li><a class="res" href="https://datos.rosario.gob.ar/sites/default/files/2022-08/observatorio_turistico_2019.pdf" target="_blank" rel="noopener">Observatorio turístico 2019 (PDF) →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-W</span><span class="card-status" style="background:var(--brick)"></span></div>
+        <h3>Corrientes</h3>
+        <ul><li><span class="empty">Todavía sin dato cargado</span></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-E</span><span class="card-status" style="background:var(--brick)"></span></div>
+        <h3>Entre Ríos</h3>
+        <ul><li><span class="empty">Todavía sin dato cargado</span></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-G</span><span class="card-status" style="background:var(--brick)"></span></div>
+        <h3>Santiago del Estero</h3>
+        <ul><li><span class="empty">Todavía sin dato cargado</span></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-K</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Catamarca</h3>
+        <ul><li><a class="res" href="https://observatorio.sfvc.tur.ar/dashboard" target="_blank" rel="noopener">Observatorio de turismo →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-J</span><span class="card-status" style="background:var(--brick)"></span></div>
+        <h3>San Juan</h3>
+        <ul><li><span class="empty">Sin observatorio disponible</span></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-L</span><span class="card-status" style="background:var(--gold)"></span></div>
+        <h3>La Rioja</h3>
+        <ul><li><a class="res" href="http://biblioteca.cfi.org.ar/wp-content/uploads/sites/2/2024/10/informe-final-oet.larioja.pdf" target="_blank" rel="noopener">Informe final OET (PDF) →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-Q</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Neuquén</h3>
+        <ul><li><a class="res" href="https://turismo.neuquen.gob.ar/observatorio-de-turismo/" target="_blank" rel="noopener">Observatorio de turismo →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-U</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Chubut</h3>
+        <ul><li><a class="res" href="https://observatur.chubut.gov.ar/" target="_blank" rel="noopener">Observatur Chubut →</a></li></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><span class="card-code">AR-V</span><span class="card-status" style="background:var(--teal)"></span></div>
+        <h3>Tierra del Fuego</h3>
+        <ul>
+          <li><a class="res" href="https://suit.tur.ar/" target="_blank" rel="noopener">SUIT →</a></li>
+          <li><a class="res" href="https://infuetur.gob.ar/estadistica/cuenta_satelite_de_turismo" target="_blank" rel="noopener">Cuenta satélite de turismo →</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="fuentes">
+    <div class="section-head">
+      <span class="mono">Otros tableros</span>
+      <h2>Diferentes estudios estadisticos</h2>
+      <p>Series y tableros que no pertenecen a una sola provincia, agrupados por organismo.</p>
+    </div>
+
+    <div class="biblio-group">
+      <h4>Estadística oficial</h4>
+      <ul>
+        <li><a href="https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-13-56" target="_blank" rel="noopener">INDEC — Encuesta de ocupación hotelera</a><span class="biblio-note">act. 20/01/26 · datos a nov. 2025</span></li>
+        <li><a href="https://camaradeturismo.org.ar/category/observatorio-argentino-de-turismo/" target="_blank" rel="noopener">Observatorio Argentino de Turismo</a><span class="biblio-note">Cámara Argentina de Turismo</span></li>
+        <li><a href="https://pinamar.tur.ar/observatorio-turistico/" target="_blank" rel="noopener">Observatorio Turístico de Pinamar</a><span class="biblio-note">municipal</span></li>
+      </ul>
+    </div>
+
+    <div class="biblio-group">
+      <h4>Sistema Nacional de Turismo — Yvera</h4>
+      <ul>
+        <li><a href="https://tableros.yvera.tur.ar/turismo_internacional/" target="_blank" rel="noopener">Turismo internacional</a><span class="biblio-note">tablero</span></li>
+        <li><a href="https://tableros.yvera.tur.ar/indice_turistico/" target="_blank" rel="noopener">Índice turístico</a><span class="biblio-note">tablero</span></li>
+        <li><a href="https://www.yvera.tur.ar/sinta/informe/info/estadisticas-de-turismo-por-provincias/cuadros-estadisticos" target="_blank" rel="noopener">Estadísticas por provincia</a><span class="biblio-note">SINTA</span></li>
+        <li><a href="https://www.yvera.tur.ar/sinta/" target="_blank" rel="noopener">Portal SINTA</a><span class="biblio-note">general</span></li>
+        <li><a href="https://biblioteca.yvera.tur.ar/" target="_blank" rel="noopener">Biblioteca Yvera</a><span class="biblio-note">documentos</span></li>
+      </ul>
+    </div>
+
+    <div class="biblio-group">
+      <h4>Organismos internacionales y otros tableros</h4>
+      <ul>
+        <li><a href="https://www.untourism.int/es/onu-turismo-dashboard-datos-turisticos/indicadores-clave-turismo" target="_blank" rel="noopener">ONU Turismo — Dashboard de indicadores</a><span class="biblio-note">global</span></li>
+        <li><a href="https://sib.gob.ar/institucional/visitantes-apn" target="_blank" rel="noopener">Parques Nacionales — Visitantes APN</a><span class="biblio-note">SIB, desde 2003</span></li>
+        <li><a href="https://public.tableau.com/app/profile/asap6186/viz/Observatorio2024/OBSERVATORIO" target="_blank" rel="noopener">Observatorio presupuestario 2024</a><span class="biblio-note">Tableau</span></li>
+        <li><a href="https://public.tableau.com/app/profile/duilio.camps/viz/InternetEnArgentina/InternetEnArgentina" target="_blank" rel="noopener">Internet en Argentina</a><span class="biblio-note">Tableau</span></li>
+        <li><a href="https://public.tableau.com/app/profile/martn.alesina/viz/Argentina_16481351275370/EconomicActivity" target="_blank" rel="noopener">Actividad económica 2023</a><span class="biblio-note">Tableau</span></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<div class="closing">
+  <div class="wrap closing-row">
+    <div>
+      <h2>Ayudanos a mantener vivos los datos</h2>
+      <p>Datovivo es un espacio gratuito y se actualiza a pulmón. Si encontrás un observatorio que falta, contanos. Si te sirvió, un cafecito ayuda a sostenerlo.</p>
+    </div>
+    <div class="closing-ctas">
+      <a class="btn btn-primary" href="https://forms.gle/NrSgU3DPCtPnLBPW7" target="_blank" rel="noopener">Sugerir una fuente</a>
+      <a class="btn btn-ghost" href="https://cafecito.app/datovivo" target="_blank" rel="noopener">cafecito.app/datovivo</a>
+    </div>
+  </div>
+</div>
+
+<footer class="colophon">DATOVIVO · directorio de datos turísticos · Argentina</footer>
+
+</body>
+</html>
